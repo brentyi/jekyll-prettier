@@ -24,7 +24,7 @@ group :jekyll_plugins do
 end
 ```
 
-2. In `_config.yml`:
+2. Alternatively, in `_config.yml`:
 
 ```
 plugins:
