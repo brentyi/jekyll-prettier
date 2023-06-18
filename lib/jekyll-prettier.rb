@@ -13,10 +13,14 @@ else
   Jekyll::Hooks.register :documents, :post_render do |doc|
     puts "Running prettier on doc: " + doc.url
     args = ["prettier", "--parser", "html"]
-    Open3.popen2(*args) do |stdin, stdout, wait_thru|
+    Open3.popen2(*args) do |stdin, stdout, wait_thr|
       stdin.print doc.output
       stdin.close
-      doc.output = stdout.read
+      if wait_thr.value.success?
+        doc.output = stdout.read
+      else
+        puts "Prettier encountered an error while formatting the document " + doc.url
+      end
     end
   end
 
@@ -28,10 +32,14 @@ else
     else
       args = ["prettier", "--stdin-filepath", page.relative_path]
     end
-    Open3.popen2(*args) do |stdin, stdout, wait_thru|
+    Open3.popen2(*args) do |stdin, stdout, wait_thr|
       stdin.print page.output
       stdin.close
-      page.output = stdout.read
+      if wait_thr.value.success?
+        page.output = stdout.read
+      else
+        puts "Prettier encountered an error while formatting the page " + doc.url
+      end
     end
   end
 end
